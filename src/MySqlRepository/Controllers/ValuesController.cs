@@ -51,7 +51,6 @@ namespace MySqlRepository.Controllers
             {
               //  dbCon.Close();  
             }
-        
            
             return departmentList;
         }
@@ -92,7 +91,7 @@ namespace MySqlRepository.Controllers
                         planogramList.Add(planogram);
                     }
 
-                  //  reader.Close();
+                    reader.Close();
 
                 }
             }
@@ -104,7 +103,7 @@ namespace MySqlRepository.Controllers
 
             finally
             {
-                dbCon.Close();
+              
             }
             
             return planogramList;
