@@ -43,15 +43,12 @@ namespace MySqlRepository.Common
             bool result = true;
 
 
+
             if (Connection == null)
             {
                 if (String.IsNullOrEmpty(databaseName))
                     result = false;
                 string connstring = string.Format("Server=dockerserver-6gi4a4vc.cloudapp.net; database={0}; UID=root; password=123", databaseName);
-               // string connstring = string.Format("Server=192.168.99.100; database={0}; UID=root; password=123", databaseName);
-
-
-                
                 try
                 {
                     connection = new MySqlConnection(connstring);
@@ -60,8 +57,11 @@ namespace MySqlRepository.Common
                 }
                 catch (Exception ex)
                 {
-
-                    throw;
+                    throw ex;
+                }
+                finally
+                {
+                    
                 }
                 
             }

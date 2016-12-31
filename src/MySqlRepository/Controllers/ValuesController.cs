@@ -7,28 +7,27 @@ using MySqlRepository.Common;
 using MySql.Data.MySqlClient;
 using MySqlRepository.Models;
 
+
 namespace MySqlRepository.Controllers
 {
     [Route("api")]
     public class ValuesController : Controller
     {
 
-        [HttpGet("GetDepartment/{id}", Name = "GetDepartment")]
-        public List<Department> GetDepartment(int id)
+        [HttpGet("GetDepartment/{storeNbr}", Name = "GetDepartment")]
+        public List<Department> GetDepartment(int storeNbr)
         {
             var dbCon = DBConnection.Instance();
             dbCon.DatabaseName = "Planogram";
             List<Department> departmentList = new List<Department>();
-            //return new string[] { "value1", "value2" };
-            
             try
             {
                 if (dbCon.IsConnect())
                 {
-                    //suppose col0 and col1 are defined as VARCHAR in the DB
-                    string query = "SELECT * FROM Department where StoreNbr = " + id;
+                    string query = "SELECT * FROM Department where StoreNbr = " + storeNbr;
                     var cmd = new MySqlCommand(query, dbCon.Connection);
                     var reader = cmd.ExecuteReader();
+
                     while (reader.Read())
                     {
                         var department = new Department();
@@ -38,24 +37,78 @@ namespace MySqlRepository.Controllers
                         department.StoreNbr = Convert.ToInt32(reader.GetString("StoreNbr"));
 
                         departmentList.Add(department);
-
-                        //departmentList.Append(department);
-
                     }
+
                     reader.Close();
                 }
-
             }
+
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
             finally
             {
-
-            } 
+              //  dbCon.Close();  
+            }
+        
            
             return departmentList;
+        }
+
+
+        [HttpGet("GetPlanograms/{storeNbr}/{DeptNbr}", Name = "GetPlanograms")]
+        public List<Planogram> GetPlanograms(int storeNbr, int DeptNbr)
+        {
+            var dbCon = DBConnection.Instance();
+            dbCon.DatabaseName = "Planogram";
+            List<Planogram> planogramList = new List<Planogram>();
+            try
+            {
+                if (dbCon.IsConnect())
+                {
+                    string query = "SELECT * FROM Planogram where StoreNbr = " + storeNbr + " and DeptNbr = " + DeptNbr;
+                    var cmd = new MySqlCommand(query, dbCon.Connection);
+                    var reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+
+                        var planogram = new Planogram();
+                        planogram.StoreNbr = Convert.ToInt32(reader.GetString("StoreNbr"));
+                        planogram.DeptNbr = Convert.ToInt32(reader.GetString("DeptNbr"));
+                        planogram.PlanogramId = Convert.ToInt32(reader.GetString("PlanogramId"));
+                        planogram.ModularPlanId = Convert.ToInt32(reader.GetString("ModularPlanId"));
+
+                        planogram.CategoryNbr = reader.GetString("CategoryNbr");
+                        planogram.CategoryName = reader.GetString("CategoryName");
+                        planogram.PlanogramDesc = reader.GetString("PlanogramDesc");
+                        planogram.EffectiveFrom = Convert.ToDateTime(reader.GetString("EffectiveFrom"));
+
+
+                        planogram.DiscontinueDate = Convert.ToDateTime(reader.GetString("DiscontinueDate"));
+                        planogram.Width = reader.GetString("Width");
+
+                        planogramList.Add(planogram);
+                    }
+
+                  //  reader.Close();
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            finally
+            {
+                dbCon.Close();
+            }
+            
+            return planogramList;
+
         }
 
         // GET api/values
