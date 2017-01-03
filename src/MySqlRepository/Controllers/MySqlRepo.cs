@@ -27,8 +27,7 @@ namespace MySqlRepository.Controllers
             {
                 string query = "SELECT * FROM Department where StoreNbr = " + storeNbr;
 
-                if (dbCon.IsConnect())
-                {
+                    dbCon.IsConnect();
                     var cmd = new MySqlCommand(query, dbCon.Connection);
                     reader = cmd.ExecuteReader();
 
@@ -43,7 +42,7 @@ namespace MySqlRepository.Controllers
                         departmentList.Add(department);
                     }
                 }
-            }
+            
 
             catch (Exception ex)
             {
@@ -53,7 +52,7 @@ namespace MySqlRepository.Controllers
             finally
             {
                 reader.Close();
-                //dbCon.Close();  
+                dbCon.Close();  
             }   
            
             return departmentList;
@@ -108,6 +107,7 @@ namespace MySqlRepository.Controllers
             finally
             {
                 reader.Close();
+                dbCon.Close();
             }
             
             return planogramList;

@@ -42,27 +42,26 @@ namespace MySqlRepository.Common
         {
             bool result = true;
 
-            if (Connection == null)
+            
+            if (String.IsNullOrEmpty(databaseName))
+                result = false;
+            string connstring = string.Format("Server=dockerserver-6gi4a4vc.cloudapp.net; database={0}; UID=root; password=123", databaseName);
+            try
             {
-                if (String.IsNullOrEmpty(databaseName))
-                    result = false;
-                string connstring = string.Format("Server=dockerserver-6gi4a4vc.cloudapp.net; database={0}; UID=root; password=123", databaseName);
-                try
-                {
-                    connection = new MySqlConnection(connstring);
-                    connection.Open();
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    
-                }
-                
+                connection = new MySqlConnection(connstring);
+                connection.Open();
+                result = true;
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                    
+            }
+                
+            
 
             return result;
         }
