@@ -42,8 +42,6 @@ namespace MySqlRepository.Common
         {
             bool result = true;
 
-
-
             if (Connection == null)
             {
                 if (String.IsNullOrEmpty(databaseName))

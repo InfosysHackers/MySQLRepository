@@ -11,22 +11,26 @@ using MySqlRepository.Models;
 namespace MySqlRepository.Controllers
 {
     [Route("api")]
-    public class ValuesController : Controller
+    public class MySqlRepo : Controller
     {
 
         [HttpGet("GetDepartment/{storeNbr}", Name = "GetDepartment")]
         public List<Department> GetDepartment(int storeNbr)
         {
+
             var dbCon = DBConnection.Instance();
             dbCon.DatabaseName = "Planogram";
             List<Department> departmentList = new List<Department>();
+
+            MySqlDataReader reader = null; //cmd.ExecuteReader();
             try
             {
+                string query = "SELECT * FROM Department where StoreNbr = " + storeNbr;
+
                 if (dbCon.IsConnect())
                 {
-                    string query = "SELECT * FROM Department where StoreNbr = " + storeNbr;
                     var cmd = new MySqlCommand(query, dbCon.Connection);
-                    var reader = cmd.ExecuteReader();
+                    reader = cmd.ExecuteReader();
 
                     while (reader.Read())
                     {
@@ -38,19 +42,19 @@ namespace MySqlRepository.Controllers
 
                         departmentList.Add(department);
                     }
-
-                    reader.Close();
                 }
             }
 
             catch (Exception ex)
             {
-                throw ex;
+                Console.Write(ex.StackTrace);
             }
+
             finally
             {
-              //  dbCon.Close();  
-            }
+                reader.Close();
+                //dbCon.Close();  
+            }   
            
             return departmentList;
         }
@@ -62,17 +66,17 @@ namespace MySqlRepository.Controllers
             var dbCon = DBConnection.Instance();
             dbCon.DatabaseName = "Planogram";
             List<Planogram> planogramList = new List<Planogram>();
+            MySqlDataReader reader = null;
             try
             {
                 if (dbCon.IsConnect())
                 {
                     string query = "SELECT * FROM Planogram where StoreNbr = " + storeNbr + " and DeptNbr = " + DeptNbr;
                     var cmd = new MySqlCommand(query, dbCon.Connection);
-                    var reader = cmd.ExecuteReader();
+                    reader = cmd.ExecuteReader();
 
                     while (reader.Read())
                     {
-
                         var planogram = new Planogram();
                         planogram.StoreNbr = Convert.ToInt32(reader.GetString("StoreNbr"));
                         planogram.DeptNbr = Convert.ToInt32(reader.GetString("DeptNbr"));
@@ -91,19 +95,19 @@ namespace MySqlRepository.Controllers
                         planogramList.Add(planogram);
                     }
 
-                    reader.Close();
+                   
 
                 }
             }
 
             catch (Exception ex)
             {
-                throw ex;
+                Console.Write(ex.StackTrace);
             }
 
             finally
             {
-              
+                reader.Close();
             }
             
             return planogramList;
