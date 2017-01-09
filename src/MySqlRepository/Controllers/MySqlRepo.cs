@@ -79,6 +79,7 @@ namespace MySqlRepository.Controllers
                         var planogram = new Planogram();
                         planogram.StoreNbr = Convert.ToInt32(reader.GetString("StoreNbr"));
                         planogram.DeptNbr = Convert.ToInt32(reader.GetString("DeptNbr"));
+                        planogram.UPCNbr = Convert.ToInt32(reader.GetString("UPCNbr"));
                         planogram.PlanogramId = Convert.ToInt32(reader.GetString("PlanogramId"));
                         planogram.ModularPlanId = Convert.ToInt32(reader.GetString("ModularPlanId"));
 
@@ -93,9 +94,7 @@ namespace MySqlRepository.Controllers
 
                         planogramList.Add(planogram);
                     }
-
-                   
-
+                    
                 }
             }
 
@@ -113,6 +112,66 @@ namespace MySqlRepository.Controllers
             return planogramList;
 
         }
+
+
+
+
+
+        [HttpGet("GetPlanogramsOnUPC/{UPCNbr}", Name = "GetPlanogramsOnUPC")]
+        public List<Planogram> GetPlanograms(int UPCNbr)
+        {
+            var dbCon = DBConnection.Instance();
+            dbCon.DatabaseName = "Planogram";
+            List<Planogram> planogramList = new List<Planogram>();
+            MySqlDataReader reader = null;
+            try
+            {
+                if (dbCon.IsConnect())
+                {
+                    string query = "SELECT * FROM Planogram where UPCNbr = " + UPCNbr ;
+                    var cmd = new MySqlCommand(query, dbCon.Connection);
+                    reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var planogram = new Planogram();
+                        planogram.StoreNbr = Convert.ToInt32(reader.GetString("StoreNbr"));
+                        
+                        planogram.DeptNbr = Convert.ToInt32(reader.GetString("DeptNbr"));
+                        planogram.UPCNbr = Convert.ToInt32(reader.GetString("UPCNbr"));
+                        planogram.PlanogramId = Convert.ToInt32(reader.GetString("PlanogramId"));
+                        planogram.ModularPlanId = Convert.ToInt32(reader.GetString("ModularPlanId"));
+
+                        planogram.CategoryNbr = reader.GetString("CategoryNbr");
+                        planogram.CategoryName = reader.GetString("CategoryName");
+                        planogram.PlanogramDesc = reader.GetString("PlanogramDesc");
+                        planogram.EffectiveFrom = Convert.ToDateTime(reader.GetString("EffectiveFrom"));
+
+
+                        planogram.DiscontinueDate = Convert.ToDateTime(reader.GetString("DiscontinueDate"));
+                        planogram.Width = reader.GetString("Width");
+
+                        planogramList.Add(planogram);
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                Console.Write(ex.StackTrace);
+            }
+
+            finally
+            {
+                reader.Close();
+                dbCon.Close();
+            }
+
+            return planogramList;
+
+        }
+
+
 
         // GET api/values
         [HttpGet]

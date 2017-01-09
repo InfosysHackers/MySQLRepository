@@ -8,6 +8,7 @@ namespace MySqlRepository.Models
     public class Planogram
     {
         public int StoreNbr { get; set; }
+        public int UPCNbr { get; set; }
         public int DeptNbr { get; set; }
         public int PlanogramId { get; set; }
         public int ModularPlanId { get; set; }
